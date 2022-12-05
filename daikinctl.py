@@ -5,12 +5,21 @@ import urllib.request
 import csv
 import time
 
-MIN_TEMP_INSIDE=14
+# Turn on if one of these temperatures goes below these values
+MIN_TEMP_INSIDE=12
+MIN_TEMP_OUTSIDE=3
+# Turn on if one of these temperatures goes above these values
 MAX_TEMP_INSIDE=26
-MIN_TEMP_OUTSIDE=5
-MAX_TEMP_OUTSIDE=26
-SLEEP_TIME=10
-CMD_TIME_DELTA=120
+MAX_TEMP_OUTSIDE=28
+
+# How long to sleep between checks of the unit temps
+SLEEP_TIME=60
+
+# Minimum time delta between sending commands to the unit to avoid flapping.
+CMD_TIME_DELTA=300
+
+# The HTTP server returns the aircon modes as integers; map them to string
+# values using this dict.
 UNIT_MODES = {
   "1": "AUTO",
   "2": "DRY",
@@ -18,12 +27,11 @@ UNIT_MODES = {
   "4": "HEATING",
   "6": "FAN",
 }
+
+# For readability of the script, these constants can be used as aguments to
+# the setPowerState() function
 POWER_ON=True
 POWER_OFF=False
-
-ipAddress=sys.argv[1]
-lastCmdEpoch = 0
-ctrlResponse = None
 
 def mkApiCall(path, getQuery = None):
   """
@@ -83,6 +91,10 @@ def setPowerState(pwrStateOn):
   lastCmdEpoch = time.time()
 
 ###############################################################################
+
+ipAddress=sys.argv[1]
+lastCmdEpoch = 0
+ctrlResponse = None
 
 if not ipAddress:
   quit("Usage: daikinctl <ip of aircon>")
