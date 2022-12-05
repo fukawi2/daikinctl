@@ -1,0 +1,12 @@
+[Unit]
+Description=daikin air-conditioner monitor and control
+Requires=network.target
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/daikinctl
+Environment=PYTHONUNBUFFERED=1
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
