@@ -169,10 +169,10 @@ while True:
 
     if tempOutside > MAX_TEMP_OUTSIDE or tempInside > MAX_TEMP_INSIDE:
       # Still too hot - do not turn off
-      True
+      pass
     elif tempOutside < MIN_TEMP_OUTSIDE or tempInside < MIN_TEMP_INSIDE:
       # Still too hot - do not turn off
-      True
+      pass
     else:
       msgText = f"All temps are acceptable; Turning {unitName} off."
       print(msgText)
