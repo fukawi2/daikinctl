@@ -146,8 +146,14 @@ while True:
     unitIsOn = False
     pwrState = f"OFF"
 
-  tempOutside = float(envData["otemp"])
-  tempInside = float(envData["htemp"])
+  try:
+    tempOutside = float(envData["otemp"])
+    tempInside = float(envData["htemp"])
+  except ValueError:
+    print(f'Bad temperature value returned from unit; otemp: {envData["otemp"]} htemp: {envData["htemp"]}')
+    time.sleep(SLEEP_TIME)
+    continue
+
   print(f"Unit is powered {pwrState}")
   print(f"Outside Temp: {tempOutside}; Inside Temp: {tempInside}")
 
