@@ -13,8 +13,10 @@ MIN_TEMP_OUTSIDE=3
 MAX_TEMP_INSIDE=26
 MAX_TEMP_OUTSIDE=28
 
-TELEGRAM_SECRET = "ENTER YOUR KEY HERE"
-TELEGRAM_CHATID = "ENTER YOUR CHAT ID HERE"
+# The secret key of your Telegram bot, and the ChatID to send notifications to.
+# Set to None to disable notifications
+TELEGRAM_SECRET = None
+TELEGRAM_CHATID = None
 
 # How long to sleep between checks of the unit temps
 SLEEP_TIME=60
@@ -105,6 +107,9 @@ def sendNotification(msgText):
   global TELEGRAM_SECRET
   global TELEGRAM_CHATID
   global unitName
+
+  if not TELEGRAM_SECRET or not TELEGRAM_CHATID:
+    return
 
   print(f"Sending Telegram notification to {telegramChatID}")
   objApprise = apprise.Apprise()
