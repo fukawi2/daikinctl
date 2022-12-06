@@ -55,7 +55,7 @@ def mkApiCall(path, getQuery = None):
   try:
     response = urllib.request.urlopen(url).read().decode("utf-8")
   except:
-    quit(f"Unable to communicate with host {ipAddress}")    
+    quit(f"Unable to communicate with host {ipAddress}")
 
   # Convert the CSV string of k=v strings to a dict
   kvData = {}
