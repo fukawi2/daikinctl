@@ -169,8 +169,6 @@ while True:
       print(msgText)
       sendNotification(msgText)
       setPowerState(POWER_OFF)
-      time.sleep(1)
-      continue
   else:
     if tempOutside > MAX_TEMP_OUTSIDE or tempInside > MAX_TEMP_INSIDE:
       # It's too hot - turn on unit on
@@ -178,15 +176,11 @@ while True:
       print(msgText)
       sendNotification(msgText)
       setPowerState(POWER_ON)
-      time.sleep(1)
-      continue
     elif tempOutside < MIN_TEMP_OUTSIDE or tempInside < MIN_TEMP_INSIDE:
       # It's too cold - turn on unit on
       msgText = f"It's too cold! Turning {unitName} OFF.\nInside: {tempInside}{DEGREE_SIGN}\nOutside: {tempOutside}{DEGREE_SIGN}"
       print(msgText)
       sendNotification(msgText)
       setPowerState(POWER_ON)
-      time.sleep(1)
-      continue
 
   time.sleep(SLEEP_TIME)
