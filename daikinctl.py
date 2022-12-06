@@ -149,8 +149,9 @@ while True:
   try:
     tempOutside = float(envData["otemp"])
     tempInside = float(envData["htemp"])
+    tempTarget = float(unitData["stemp"])
   except ValueError:
-    print(f'Bad temperature value returned from unit; otemp: {envData["otemp"]} htemp: {envData["htemp"]}')
+    print(f'Bad temperature value returned from unit; otemp: {envData["otemp"]} htemp: {envData["htemp"]} stemp: {unitData["stemp"]}')
     time.sleep(SLEEP_TIME)
     continue
 
@@ -158,6 +159,14 @@ while True:
   print(f"Outside Temp: {tempOutside}; Inside Temp: {tempInside}")
 
   if unitIsOn:
+    # If the unit is on, wait until the inside temp is within an acceptable range before considering if the temps
+    # inside/outside are back within range.
+    acceptableTempMin = tempTarget - 2
+    acceptableTempMax = tempTarget + 2
+    if not ((tempTarget - 2) <= tempInside <= (tempTarget + 2)):
+      print("Inside temp not within target temperature")
+      continue
+
     if tempOutside > MAX_TEMP_OUTSIDE or tempInside > MAX_TEMP_INSIDE:
       # Still too hot - do not turn off
       True
