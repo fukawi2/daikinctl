@@ -111,9 +111,9 @@ def sendNotification(msgText):
   if not TELEGRAM_SECRET or not TELEGRAM_CHATID:
     return
 
-  print(f"Sending Telegram notification to {telegramChatID}")
+  print(f"Sending Telegram notification to {TELEGRAM_CHATID}")
   objApprise = apprise.Apprise()
-  objApprise.add("tgram://" + telegramSecret + "/" + telegramChatID)
+  objApprise.add("tgram://" + TELEGRAM_SECRET + "/" + TELEGRAM_CHATID)
   objApprise.notify(
       title = f"daikinctl: {unitName}",
       body = msgText,
