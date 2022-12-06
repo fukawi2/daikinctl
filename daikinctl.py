@@ -22,7 +22,7 @@ TELEGRAM_CHATID = None
 SLEEP_TIME=60
 
 # Minimum time delta between sending commands to the unit to avoid flapping.
-CMD_TIME_DELTA=300
+CMD_TIME_DELTA=SLEEP_TIME*2
 
 # The HTTP server returns the aircon modes as integers; map them to string
 # values using this dict.
