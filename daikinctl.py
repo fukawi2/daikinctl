@@ -4,6 +4,7 @@ import sys
 import urllib.request
 import csv
 import time
+import apprise
 
 # Turn on if one of these temperatures goes below these values
 MIN_TEMP_INSIDE=12
@@ -11,6 +12,9 @@ MIN_TEMP_OUTSIDE=3
 # Turn on if one of these temperatures goes above these values
 MAX_TEMP_INSIDE=26
 MAX_TEMP_OUTSIDE=28
+
+TELEGRAM_SECRET = "ENTER YOUR KEY HERE"
+TELEGRAM_CHATID = "ENTER YOUR CHAT ID HERE"
 
 # How long to sleep between checks of the unit temps
 SLEEP_TIME=60
@@ -32,6 +36,7 @@ UNIT_MODES = {
 # the setPowerState() function
 POWER_ON=True
 POWER_OFF=False
+DEGREE_SIGN = u'\N{DEGREE SIGN}'
 
 def mkApiCall(path, getQuery = None):
   """
@@ -90,9 +95,29 @@ def setPowerState(pwrStateOn):
   result = mkApiCall("/aircon/set_control_info", getQuery)
   lastCmdEpoch = time.time()
 
+
+
+def sendNotification(msgText):
+  """
+  Send notifications using the Apprise Developer API
+  Refer: https://github.com/caronc/apprise/wiki/Development_API
+  """
+  global TELEGRAM_SECRET
+  global TELEGRAM_CHATID
+  global unitName
+
+  print(f"Sending Telegram notification to {telegramChatID}")
+  objApprise = apprise.Apprise()
+  objApprise.add("tgram://" + telegramSecret + "/" + telegramChatID)
+  objApprise.notify(
+      title = f"daikinctl: {unitName}",
+      body = msgText,
+  )
+
 ###############################################################################
 
 ipAddress=sys.argv[1]
+unitName=sys.argv[2]
 lastCmdEpoch = 0
 ctrlResponse = None
 
@@ -119,8 +144,7 @@ while True:
   tempOutside = float(envData["otemp"])
   tempInside = float(envData["htemp"])
   print(f"Unit is powered {pwrState}")
-  print(f"Outside Temp: {envData['otemp']}")
-  print(f"Inside Temp: {envData['htemp']}")
+  print(f"Outside Temp: {tempOutside}; Inside Temp: {tempInside}")
 
   if unitIsOn:
     if tempOutside > MAX_TEMP_OUTSIDE or tempInside > MAX_TEMP_INSIDE:
@@ -130,20 +154,26 @@ while True:
       # Still too hot - do not turn off
       True
     else:
-      print("All temps are acceptable; Turning unit off.")
+      msgText = f"All temps are acceptable; Turning {unitName} off."
+      print(msgText)
+      sendNotification(msgText)
       setPowerState(POWER_OFF)
       time.sleep(1)
       continue
   else:
     if tempOutside > MAX_TEMP_OUTSIDE or tempInside > MAX_TEMP_INSIDE:
       # It's too hot - turn on unit on
-      print("It's too hot! Turning unit on.")
+      msgText = f"It's too hot! Turning {unitName} on.\nInside: {tempInside}{DEGREE_SIGN}\nOutside: {tempOutside}{DEGREE_SIGN}"
+      print(msgText)
+      sendNotification(msgText)
       setPowerState(POWER_ON)
       time.sleep(1)
       continue
     elif tempOutside < MIN_TEMP_OUTSIDE or tempInside < MIN_TEMP_INSIDE:
       # It's too cold - turn on unit on
-      print("It's too cold! Turning unit on.")
+      msgText = f"It's too cold! Turning {unitName} OFF.\nInside: {tempInside}{DEGREE_SIGN}\nOutside: {tempOutside}{DEGREE_SIGN}"
+      print(msgText)
+      sendNotification(msgText)
       setPowerState(POWER_ON)
       time.sleep(1)
       continue

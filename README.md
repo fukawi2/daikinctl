@@ -17,9 +17,9 @@ to `daikinctl` in the service file if you put it someone other than `/usr/local/
 
 ## Usage
 
-Accepts a single argument:
+Requires 2 arguments:
 
-    ./daikinctl <Hostname or IP of Airconditioner Wifi Module>
+    ./daikinctl <Hostname or IP of Airconditioner Wifi Module> <Friendly Name of Unit>
 
 Temperature thresholds are defined at the top of the script:
 
