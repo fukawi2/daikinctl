@@ -161,10 +161,11 @@ while True:
   if unitIsOn:
     # If the unit is on, wait until the inside temp is within an acceptable range before considering if the temps
     # inside/outside are back within range.
-    acceptableTempMin = tempTarget - 2
-    acceptableTempMax = tempTarget + 2
-    if not ((tempTarget - 2) <= tempInside <= (tempTarget + 2)):
+    acceptableTempMin = tempTarget - 1
+    acceptableTempMax = tempTarget + 1
+    if not (acceptableTempMin <= tempInside <= acceptableTempMax):
       print("Inside temp not within target temperature")
+      time.sleep(SLEEP_TIME)
       continue
 
     if tempOutside > MAX_TEMP_OUTSIDE or tempInside > MAX_TEMP_INSIDE:
